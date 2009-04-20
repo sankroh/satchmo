@@ -1,0 +1,130 @@
+==================
+Satchmo Change Log
+==================
+
+Version 0.8.1, December 14, 2008
+--------------------------------
+ * Fix user name generator to handle unicode chars more robustly
+ * Fix handling of ampersands in PDF generation
+ * Update Italian translation
+ * Update DOB widget
+ * Added neve cache decorator to several views
+ * Code speedups for discount checking
+ 
+
+Version 0.8, November 25, 2008
+-----------------------------
+ * Add USPS shipping module
+ * Converted to using newforms admin
+ * Made country validation of post code and territories/states more robust
+ * Added Protx payment support
+ * New config setting to hide translation fields
+ * Refactored payment code to be more modular
+ * Change a time stamp field name for Oracle compatability
+ * Added support for brands
+ * New shuffle filter
+ * Multi-site support
+ * Added Italian & Hebrew translation
+ * Migrated to new django comments functionality. Remove the need for comment_utils
+ * Move admin to use nfa and rest of Satchmo now compatible with django 1.0
+ * Removed all standalone satchmo settings from settings.py and local_settings.py, moving them
+   to a dictionary.  This allows for explicit defaults and for easier integration with other apps.
+ * Moved all order methods, classes and views into the satchmo.shop application from Contact
+ * Fixed circular imports in several apps.
+ * New configuration feature in payment section, allowing shop owners to be notified by email
+   when they have a new sale.
+ * Refactor of emailing on order completion, now uses signals, simplifying payment modules.
+ * New optional app "satchmo.upsell" which allows product upselling on product detail pages.
+ * New signals in get_qty_price methods of products, allowing code to manipulate the price returned
+   by the function.  Example code using these signals is at satchmo.contrib.cartqty_discounts,
+   which modifies the qty_discount method to calculate the discount based on the total number of items
+   in the cart, rather than the total amount of the lineitem.
+ * Improved inheritance of detail_producttype.html pages, which no longer need to duplicate as much of
+   the code of base_product.html, allowing for easier addition of features to the product detail pages.
+ * New most popular, best sellers and recently added views
+ * New tiered shipping module based on quantity
+ * New Fedex shipping module
+ * New configuration option to force login for checkout
+ * Refactored base template layout to be more extensible
+ * Refactored the login and signup code to make it more extensible
+ * Improved performance of price lookups
+ * Recurring billing support for Authorize.net
+ * New Purchase Order payment module
+ 
+
+
+Version 0.7, May 26, 2008
+-------------------------
+ * Added config files to make rpm creation easier
+ * German translation
+ * New capability to choose the translation language
+ * COD payment module
+ * Category code cleanup
+ * Highlight active category in the menu
+ * Install documentation cleanup
+ * New feature to manage translations of all parts of Satchmo content
+ * Ability to add images to categories & override category sort order
+ * Improvements to CustomProduct to make it more broadly useable
+ * Currency displayed using the chosen locale
+ * Documented creation of custom payment modules
+ * Creation of new templatetags (product_category_siblings and product_images)
+ * Created new Shipping Module, 'Tiered', allowing multiple carriers and variable pricing by cart total.
+ * Added cybersource payment module
+ * New config values to display featured products randomly
+ * Increased length of Contact phonenumber to work internationally
+ * Added shipping countries directly to Shop - allowing the shops to specify legal countries for shipping.
+ * Updated google analytics to new code, with an optional fallback to the old urchin.js
+ * Added new Tax module "Area", which calculates taxes based on country or state.
+ * Updated discount system to track which discounts were applied to which line items.
+ * Add weight and dimension unit info to the product model.
+ * Provide integration for UPS online tools.
+ * New sku model field
+ * New gift certificate capability.
+ * Fixed New Zealand states/region info in l10n data
+ * Improvements to tax calc code
+ * Updated swedish translation
+ * Improve checks to make sure dupe emails are not used by accounts
+ * Fixed a bug with PDF generation in windows
+ * Improved product export capability to support categories
+ * Added Brazilian Portuguese translation
+ * Added a subscription product
+ * Cleaned up breadcrumbs to make it easier to modify via css
+ * Removed storage of ccv field in database
+ * Actually keep track of items when they are sold
+ * Swedish and German translation updates
+ * Can now prevent someone from purchasing an item that is out of stock
+ * Google feed support
+ * New Bulgarian translation
+ * Korean translation
+ * Recently viewed items support
+ * Wishlist support
+ * UI improvements to the admin site
+ * Added some javascript to disable shipping address fields if "same shipping and billing address are used"
+ * SEO optimizations to templates
+ * Performance improvements when using Configurable Products
+ * Fix some unicode issues with some of the shipping and payment processing backends
+ * Trustcommerce bug fixes
+ * Updated documentation to use sphinx
+ * Fixed some bugs in pdf generation
+ * Made pdf logo selection part of the configuration settings
+
+Version 0.6, October 30, 2007
+----------------
+ * Removed dependency on Webda and added new l10n models
+ * Added capability to rate and review products
+ * Improved capabilities for users to manage their account information
+ * Creation of a simple inventory management interface
+ * Multiple bug fixes and code cleanups
+ * New configuration option to allow user to set image upload directory name
+ * Improved error handling for loading data
+ * Allow manual product ordering in a category
+ * Remove most custom settings from local_settings.py, instead using the satchmo.configuration app
+ * Added a cache manager
+ * Added TrustCommerce as a processing module
+ * New downloadable product type
+ * New custom product type
+ * Added Swedish translation
+
+Version 0.5, August 22, 2007
+----------------------------
+ * First official package launch

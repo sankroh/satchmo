@@ -1,0 +1,270 @@
+============
+Installation
+============
+
+This guide is the new (and hopefully improved) Satchmo installation process. It is meant to be a cookbook
+approach for most users. Advanced users may wish to modify this in order to integrate into their own projects.
+
+This guide assumes you are working on a unix variant and that you are installing it somewhere into a directory
+you have write access to. In the below example, we use /home/user/src. You are expected to modify the path to fit your needs.
+
+.. warning::
+   You must have Django 1.0.x properly installed and all of the dependencies mentioned in the requirements_ section properly installed. 
+   
+The easiest way to install satchmo requirements, is to use the python setuptools program to download egg and tar packages. The next section describes
+one simple method to install the dependencies. You may manually install them if you wish.
+
+Installing Dependencies
++++++++++++++++++++++++++++++++++
+
+1. Install setuputils by following the instructions on easy_install_ page. After installation, you should be able to run ``easy_install`` directly (assuming the install directory is in you $PATH).
+		
+2. Install required dependencies (this may vary based on your OS of choice)::
+	
+        easy_install pycrypto
+        easy_install http://code.enthought.com/enstaller/eggs/rhel/3/Reportlab-2.1.0001-py2.5.egg
+        easy_install django-registration
+        easy_install http://tinyforge.org/frs/download.php/1/trml2pdf.tar.gz
+        easy_install PyYAML
+        
+.. warning::
+	Not all dependencies are available via ``easy_install``.
+
+3. Install Python Imaging Library. There are multiple options for installing this application. Please use 1 of the options below::
+    
+    - Download the binary from the PIL site and install.
+    
+    - Use your distributions package manager. For Ubuntu::
+    
+        sudo apt-get install python-imaging
+
+    - Use easy_install::
+    
+        easy_install --find-links=http://download.zope.org/distribution PILwoTk
+        
+4. Optional dependencies::
+
+	easy_install elementtree
+	easy_install docutils
+	
+.. note::
+	Please note that all dependencies can be installed manually. Please visit the requirements_ page for details. Also, provided egg and tar files may not be the most current installation, so you should ensure that the
+	recommended satchmo version is available via ``easy_install`` before proceeding.
+
+Installing Satchmo into your path
++++++++++++++++++++++++++++++++++
+
+1. Use django to create your new store::
+
+        cd /home/user/src
+        django-admin.py startproject mystore
+
+2. Checkout the latest Satchmo release into (/home/user/src) ::
+
+        svn co svn://satchmoproject.com/satchmo/tags/0.8.1/ satchmo-rel
+
+3. Install satchmo into your site-packages directory::
+
+        cd /home/user/src/satchmo-rel
+        sudo python setup.py install
+
+4. Once the above step is completed, you should be able to import both django and satchmo::
+
+        $ python
+        Python 2.5.2 (r252:60911, Mar 12 2008, 13:39:09) 
+        [GCC 4.2.3 (Ubuntu 4.2.3-2ubuntu4)] on linux2
+        Type "help", "copyright", "credits" or "license" for more information.
+        >>> import django
+        >>> import satchmo
+        >>> 
+
+.. warning::
+   Do not attempt to progress any further on the install until the above imports work.
+   
+   
+Customizing the settings
+++++++++++++++++++++++++
+
+Now, you need to customize the settings.py file in mystore to include the relevant satchmo information. A sample file called settings-customize.py is available to act as a template. You may choose
+to copy this file and use as a template for settings.py or use the notes below to configure your existing one. Please remember to ensure that your Django database connections and settings are 
+working properly before trying to add any pieces of satchmo.
+
+5. Ensure that /home/user/src/my-store/settings.py has the following satchmo-specific configurations (in addition to the defaults and your other app needs)::
+
+        import os
+        DIRNAME = os.path.abspath(os.path.dirname(__file__))
+        LOCAL_DEV = True
+        
+        MEDIA_ROOT = os.path.join(DIRNAME, 'static/')
+        
+        MIDDLEWARE_CLASSES = ("django.middleware.locale.LocaleMiddleware",  
+                              "satchmo.shop.SSLMiddleware.SSLRedirect",
+                              "satchmo.recentlist.middleware.RecentProductMiddleware")
+        TEMPLATE_DIRS = (os.path.join(DIRNAME, "templates"))
+        TEMPLATE_CONTEXT_PROCESSORS = 	('satchmo.shop.context_processors.settings',
+                                         'django.core.context_processors.auth',
+                                         'satchmo.recentlist.context_processors.recent_products',
+                                         )
+
+        INSTALLED_APPS = (
+                'django.contrib.admin',
+                'django.contrib.admindocs',
+                'django.contrib.auth',
+                'django.contrib.contenttypes',
+                'django.contrib.sessions',
+                'django.contrib.sites',
+                'django.contrib.comments',
+                'comment_utils',
+                'django.contrib.sitemaps',
+                'satchmo.caching',
+                'satchmo.configuration',
+                'satchmo.shop',
+                'satchmo.contact',
+                'satchmo.product',
+                'satchmo.shipping',
+                'satchmo.payment',
+                'satchmo.discount',
+                'satchmo.giftcertificate',
+                'satchmo.supplier',
+                'satchmo.thumbnail',
+                'satchmo.l10n',
+                'satchmo.tax',
+                'satchmo.recentlist',
+                'satchmo.productratings'
+                )
+                
+        AUTHENTICATION_BACKENDS = (
+            'satchmo.accounts.email-auth.EmailBackend',
+            'django.contrib.auth.backends.ModelBackend'
+            )
+
+        # Load the local settings
+        from local_settings import *
+        
+6. Copy the local_settings file to mystore::
+
+        cp /home/user/src/satchmo-rel/satchmo/local_settings-customize.py /home/user/src/mystore/local_settings.py
+        
+7. You will need to verify the values assigned to the following items in local_settings.py::
+
+        SITE_NAME
+        CACHE_BACKEND
+        CACHE_TIMEOUT
+        SITE_DOMAIN
+        SHOP_BASE
+        LOGDIR
+        LOGFILE
+        
+Copy the rest of the required files
++++++++++++++++++++++++++++++++++++
+
+8. Next, you need to configure your urls.py file::
+
+        python manage.py satchmo_copy_urls
+
+9. You will need to merge the satchmo-urls.py file with the existing urls.py file. For most situations, just copy over::
+        
+        cp urls.py urls.py.orig
+        cp satchmo-urls.py urls.py
+        
+10. Copy over the static directory::
+
+        python manage.py satchmo_copy_static
+        
+11. Copy over the default templates::
+
+        python manage.py satchmo_copy_templates
+
+Test and Install the Data
++++++++++++++++++++++++++
+   
+12.  Now, you should be ready to go. In order to test your Satchmo setup, execute the following command (from the mystore directory)::
+
+        python manage.py satchmo_check
+        Checking your satchmo configuration.
+        Your configuration has no errors.
+        
+If any errors are identified, resolve them based on the error description.
+
+13. Sync the new satchmo tables::
+
+        python manage.py syncdb
+        
+14. Load the country data stored in the l10n application::
+
+        python manage.py satchmo_load_l10n
+        
+15. (Optional) Load the demo store data::
+
+        python manage.py satchmo_load_store
+        
+16. (Optional) Load the US tax table::
+
+        python manage.py satchmo_load_us_tax
+		
+View the Demo Store
++++++++++++++++++++
+
+17.  Start up the sample webserver to see your store::
+
+        python manage.py runserver
+        
+17.  In order to see your sample store, point your browser to::
+    
+        http://127.0.0.1:8000/store
+
+19.  If you want to see the admin interface, point your browser to::
+
+        http://127.0.0.1:8000/admin
+        
+20.  Many configuration and customization settings are accessed through the url::
+
+        http://127.0.0.1:8000/settings
+        
+21.  Additional detailed documentation can be found here::
+
+        http://127.0.0.1:8000/admin/doc
+
+.. note::
+    The above urls will be dependent on your Django setup.  If you're running the webserver on the
+    same machine you're developing on, the above urls should work.  If not, use the appropriate url.
+
+Additional Notes
+++++++++++++++++
+
+Satchmo also includes a command that will erase all your tables. It is useful while devoloping but please be careful before using!
+
+.. warning::
+    The next step can erase data in the satchmo database. Be sure to have a backup of any critical data.
+    
+(For development use only)::
+
+        python manage.py delete_all_dbs
+
+Satchmo also includes a full set of unit tests. After you get your system installed, you can run the unit tests with this command::
+
+        python manage.py test
+		
+Advanced Configuration
+++++++++++++++++++++++
+
+The steps described above are the quickest and simplest method for getting a Satchmo store up and running
+quickly. However, there are some downsides to the approach described in these steps:
+
+    - Integration with other Django apps is not as straightforward
+    - Keeping templates up to date with Satchmo is more challenging
+
+After you get your store running and are comfortable with the basic functions of Satchmo and Django, we recommend that your review 
+`this blog post <http://gosatchmo.com/starting-a-new-store-real-world-project-layout>`_
+for a more robust project layout. It will take a little bit more effort but is much more sustainable for
+future upgrades.
+
+Useful Links
+++++++++++++++++++++++++++
+
+`Django installation guide`_
+
+.. _Django installation guide: http://www.djangoproject.com/documentation/install/
+.. _`Django Comment Utils`: http://code.google.com/p/django-comment-utils/
+.. _easy_install : http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions   
+.. _requirements : requirements.html

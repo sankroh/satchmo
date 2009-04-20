@@ -1,0 +1,80 @@
+Pricing
+=======
+
+Satchmo has flexible pricing that allows you to price at multiple levels.
+
+.. index::
+   single: Price overview   
+
+Pricing at the Item Level
+-------------------------
+
+You can create top-level Products, which are the things your customers see on the website. (Ex: Python Rocks shirt in demo store)
+Additionally, these products can have options (Ex: sizes, colors, etc).  The product has a variation for each combination of options. 
+This can be used to track inventory of particular product variations. (Ex: The Large, Blue, Python Rocks Shirt)
+
+Effectively it works like:
+Product + Option = Variation
+
+Pricing fits into the picture this way:
+ * You can set a default price on your Product.
+ * You can set a price adjustment for an option.
+ * You can set a price over-ride for a variation.
+
+The price code looks through these backwards. If the variation has a price then that is used
+Otherwise the Product price is used +/- the adjustment for the chosen options (IE: XL shirts are +$1.00)
+
+With this capability, you can quickly price a simple store by just using the product prices, and possibly adding price adjustments for specific options, 
+but you have the option of very fine-grained price control by setting prices for each variation.
+
+Product Variation Prices
+------------------------
+
+On the product variations, the price can have an expiration date and/or a quantity. 
+If either of these fields are set then that price is only effective for orders placed before that date, or >= that quantity. 
+The most specific of these gets highest priority (IE: the soonest expiration date, and the highest applicable quantity). 
+This useful for running temporary promotions that automatically expire.
+
+Expiring Pricing
+----------------
+If you are using expiring dates for prices, please note that you must run a daily update of the pricing lookup table.  To do this, you need to run "./manage.py satchmo_rebuild_pricing"
+
+The easiest way to run this automatically is to use the excellent "Django_Extensions_" app.  We've already added a daily job to rebuild prices, so all you need to do is to ensure that the daily job is getting run via crontab::
+
+    # run every morning at 2:22 am
+    22 2 * * * /usr/bin/python /path/to/site/manage.py runjobs daily >/dev/null 2>&1
+
+Alternatively you can directly execute the command via crontab::
+
+    # run every morning at 2:22 am
+    22 2 * * * /usr/bin/python /path/to/site/manage.py satchmo_rebuild_pricing >/dev/null 2>&1
+   
+Pricing Tiers
+-------------
+
+Satchmo supports setting different price and discount tiers based on user groups. The most
+common reason a store owner may need this is if they want to offer different discounts or prices
+for a class of user. For instance, a user with a "Gold" membership may automatically get a 
+percentage discount. Another common usage is for wholesale versus retail pricing.
+
+This feature is optional and can be enabled by following these steps:
+Using it is quite simple:
+
+    1. Add 'satchmo.product.tieredpricing' to your INSTALLED_APPS
+    2. Create a user group for your desired tier.
+    3. Add users to that group using the group management in the admin.
+    4. Make a PricingTier, associating the group to the tier, and setting any default percentage discount.
+    5. If you want specific tiered pricing for a product, then edit the product. You'll see a new section, "Tiered Prices", where you can set prices by tier.
+    
+The price resolution process is straightforward.
+
+1. If the user is anonymous or has no groups, use the non-tiered price.
+2. If the user has a group and that group has a tier:
+
+  2a. Look for explicit prices (see #5 above) for that product.  If found, return it.
+  
+  2b. Else return the non-tiered price reduced by the default tier discount percent.
+  
+3. If the user has multiple tiers, return the lowest amount found in 2a & 2b.
+
+.. _Django_Extensions: http://code.google.com/p/django-command-extensions/

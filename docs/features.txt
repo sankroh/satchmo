@@ -1,0 +1,106 @@
+Satchmo Features
+=====================
+  
+Current Features
+----------------
+
+Satchmo strives to be extremely flexible.
+    - All display items are driven by templates using the powerful Django templating language
+    - All urls can be custom configured to your desired naming convention
+    - The checkout process can be tailored to your specific needs
+
+Satchmo support many payment modules including:
+    - Authorize.net
+    - Trustcommerce
+    - Google checkout
+    - Cybersource
+    - Paypal
+    - Protx
+    - Purchase orders
+
+Satchmo has flexible shipping options and allows you to create your own. Satchmo includes:
+    - UPS integration
+    - Fedex integration
+    - USPS integration
+    - Flat rate shipping
+    - Multi-tiered shipping
+    
+Satchmo's has robust support for multiple product types including:
+    - Downloadable products
+    - Subscription products
+    - Custom configured products
+    - Product variants
+    - Gift certificates
+
+All products offer you the opportunity to have:
+    - As many images per product as you would like
+    - Automatice thumbnail creation for the images
+    - Unlimited categories and sub categories
+    - Support for multiple pricing and discounting tiers based on volume
+    - Support for tiered/group pricing
+    - Inventory tracking including SKU's and preventing users from ordering out of stock items
+    - Meta data support for SEO
+    - Featured items
+    - Tax tables
+    - Related products
+    - Most popular products
+    - Arbitrary attributes
+    - Multiple translations per product
+    - Flexible variant creation (shirts with sizes and colors) including price changes for combinations
+    - Allow user to comment and rate products
+    - Comments support akismet spam tagging
+
+The customer model allows you to:
+    - Have multiple ship to and bill to addresses
+    - View order history
+    - Update account profile online
+    - Reset user passwords
+    - Require email verification for account creation
+
+Satchmo supports discount codes which allow you to:
+    - Set amount of percentage discounts
+    - Limit the number of uses
+    - Allow free shipping
+    - Set start and end dates
+    - Limit to certain products
+    
+Satchmo includes extensive Internationalization and translation support:
+    - Multiple translations are included:
+        - French
+        - German
+        - Italian
+        - Spanish
+        - Swedish
+        - Bulgarian
+        - Portuguese
+        - Korean
+        - Hebrew
+        - Turkish
+        
+    - Full country specific information
+    - Translation support for all products and categories
+    - Support for date and currency formating based on locale
+    
+Satchmo takes security seriously:
+    - Django provides built in support to prevent many common attacks such as:
+        - SQL injection
+        - Automatic HTML escaping to prevent cross-site scripting
+        - Session forging/hijacking
+    - Satchmo encrypts all credit card information
+    - Satchmo does not store ccv data in the database
+    - Fine grained ssl support for as many or as few urls as you need
+
+Django is a proven scalable and robust system. Satchmo takes advantage of this by using:
+    - Django caching
+    - Opportunity to easily split out the tiers of the application (database, web, etc)
+    - A large suite of unit tests
+
+In addition to these items, Satchmo provides:
+    - Generation of PDF invoices, packing slips and shipping labels
+    - Full store product searching
+    - Google analytic integration
+    - Google adwords support
+    - Google base feeds
+    - Newsletter support via mailman or custom database
+    - Recently viewed items
+    - Wishlists
